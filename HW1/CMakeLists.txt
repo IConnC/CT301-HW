@@ -18,7 +18,7 @@ add_compile_options(-Wunused-const-variable=1 -Wzero-as-null-pointer-constant)
 
 # add_compile_options must be BEFORE add_executable or add_library.
 
-add_executable(${PROJECT_NAME} MadLibs.cc)
+add_executable(${PROJECT_NAME} mad_libs.cc)
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
 
 # Create a tar file every time:

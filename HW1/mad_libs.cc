@@ -44,7 +44,7 @@ string GetUserResponse(string &fill_in){
     // Remove leading and trailing _ character from fill in word type
     fill_in.replace(0, 1, "");
     fill_in.replace(fill_in.length() - 1, 1, "");
-    
+    //fill_in = fill_in.substr(1, fill_in.length() - 1);
 
     // Replace all _ characters in the middle of the fill in word to allow for multi-word fill in words
     size_t position;
@@ -84,11 +84,9 @@ int main(int argc, char* argv[])
             output_stream << "\n";
         }
 
-        cout << "Your Madlib!\n\n" << output_stream.str() << "\n";
+        cout << "Your MadLib!\n\n" << output_stream.str() << "\n";
 
-        // NOTE: Your code goes here
-        // NOTE: Get a line, check to see if any of the words in the line are a fill in word.
-        //TODO: Output the finished madlib like so "Your MadLib\n\n" followed by their madlib and a new line at the end
+        // Output the finished madlib like so "Your MadLib\n\n" followed by their madlib and a new line at the end
     }
 }
 
