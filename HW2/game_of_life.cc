@@ -31,9 +31,73 @@ Function:
     Then update the cell information in the "next generation" string
 */
 
-bool IsAdjacent() {
-    return false;
+int* GetLiveAdjacent(int width, const string &curr_gen, int index) {
+    static int adjacent[8];
+    int count = 0;
+
+    for (int i=0; i<8; i++) {
+        adjacent[i] = -1;
+    }
+
+    //int initial_row = 0;
+    //int inital_col = 0;
+
+    int curr_index;
+    for (int row=index - 1; row < index + 2; row++) {
+        for (int col=index - 1; col < index + 2; col++) {
+            // Get Column wrap
+            //cout << (index + col) << "\n";
+            //cout << width << "\n";
+
+            //cout << (col + width) % width << "\n";
+
+            //col+(row*width)
+            //cout << "\n" << ((col + width) % width + (initial_row * width)) << "\n";
+            curr_index = ((col + width) % width + (((row + width) % width) * width));
+
+            if (curr_index == index) continue;
+
+            cout << curr_gen[curr_index];
+
+            //return adjacent;
+            // Get Row wrap
+        }
+        cout << "\n";
+
+    }
+    count++;
+
+
+    cout << "\n";
+    for (int i=0; i<8; i++) {
+        cout << adjacent[i] << " ";
+    }
+    cout << "\n";
+
+    return adjacent;
 }
+
+void OutputGeneration(const string &gen, int generation_number, int width) {
+    cout << "Generation: " << generation_number << "\n";
+    for (int row=0; row < width; row++) {
+        for (int col=0; col < width; col++) {
+            cout << gen[col+(row*width)];
+        }
+        cout << "\n";
+    }
+}
+
+void CalculateGeneration(int width, const string &curr_gen, string &next_gen) {
+
+
+    for (int row=0; row < width; row++) {
+        for (int col=0; col < width; col++) {
+            GetLiveAdjacent(width, curr_gen, col+(row*width));
+            return;
+        }
+    }
+}
+
 
 int main(int argc, char* argv[])
 {
@@ -57,5 +121,9 @@ int main(int argc, char* argv[])
             game_table_alpha[col+(row*width)] = line[col];
         }
     }
+
+    CalculateGeneration(width, game_table_alpha, game_table_beta);
+    OutputGeneration(game_table_alpha, generations, width);
+
     // NOTE: Your Code Starts Here
 }
