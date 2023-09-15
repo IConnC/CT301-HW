@@ -1,4 +1,0 @@
-/s/chopin/g/under/gkrier/CT301/HW2/CMakeFiles/edit_cache.dir
-/s/chopin/g/under/gkrier/CT301/HW2/CMakeFiles/HW2.dir
-/s/chopin/g/under/gkrier/CT301/HW2/CMakeFiles/rebuild_cache.dir
-/s/chopin/g/under/gkrier/CT301/HW2/CMakeFiles/submission.dir
