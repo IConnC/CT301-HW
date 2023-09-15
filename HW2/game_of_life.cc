@@ -31,32 +31,27 @@ Function:
     Then update the cell information in the "next generation" string
 */
 const static char ALIVE_CHARACTER = '*';
-const static char DEAD_CHARACTER = '+';
-
+const static char DEAD_CHARACTER = '-';
 
 // Returns an integer array of all cells that are currently alive
 int CountLiveAdjacent(int width, const string &curr_gen, int index) {
     int adjacent = 0;
 
 
-    cout << "\nAdjacent Indexes for Index: " << index << "\n";
     int curr_index;
-    for (int row=index - 1; row <= index + 1; row++) {
-        for (int col=index - 1; col <= index + 1; col++) {
-            cout << "Row Index: " << row << " | Column Index: " << col << " || ";
-            // Gets index of adjacent cells
+    for (int row=(index / width) - 1; row <= (index / width) + 1; row++) {
+        for (int col=(index % width) - 1; col <= (index % width) + 1; col++) {
+            // Gets current index allowing for out of bound indexes to get wrapped around cells.
             curr_index = ((col + width) % width + (((row + width) % width) * width));
-            cout << curr_index << " \n";
+
+            // If current index continue past the next if statment
             if (curr_index == index) continue;
 
             if (curr_gen[curr_index] == ALIVE_CHARACTER) {
                 adjacent++;
-                //cout << " " << curr_index << ":" << curr_gen[curr_index];
             }
         }
     }
-
-    cout << "\n";
 
     return adjacent;
 }
@@ -92,16 +87,14 @@ void OutputGeneration(const string &gen, int generation_number, int width) {
 // Calculates the next cell generation
 void CalculateGeneration(int width, const string &curr_gen, string &next_gen) {
 
-    //int* adjacent_pointer;
     int alive_neighbors = 0;
 
     for (int row=0; row < width; row++) {
         for (int col=0; col < width; col++) {
-            //GetLiveAdjacent(width, curr_gen, col+(row*width));
+            // Gets the number of alive and adjacent cells
             alive_neighbors = CountLiveAdjacent(width, curr_gen, col+(row*width));
-            
 
-            // Sets cells to dead or alive depending on 
+            // Sets cells to dead or alive depending on if CalculateIsAlive is true or false
             // Second argument checks to see if current cell is alive or not
             if (CalculateIsAlive(alive_neighbors, (curr_gen[col+(row*width)] == ALIVE_CHARACTER))) {
                 next_gen[col+(row*width)] = ALIVE_CHARACTER;
@@ -142,7 +135,10 @@ int main(int argc, char* argv[])
         game_table_alpha = game_table_beta;
     }
 
-    //CountLiveAdjacent(width,game_table_alpha, 0);
-
-    // NOTE: Your Code Starts Here
+    ofstream out_file;
+    size_t end_file_path = filename.find_last_of('/');
+    string out_filename;
+    if (end_file_path != string::npos) {
+        out_filename = filename.substr(end_file_path+1);
+    }
 }
