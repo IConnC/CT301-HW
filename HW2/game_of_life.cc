@@ -141,4 +141,18 @@ int main(int argc, char* argv[])
     if (end_file_path != string::npos) {
         out_filename = filename.substr(end_file_path+1);
     }
+    else {
+        out_filename = filename;
+    }
+    out_file.open("final_output_"+out_filename);
+    out_file << "Final Generation: " << generations << "\n";
+    for (int i = 0; i < width; i++)
+        {
+            for (int j = 0; j < width; j++)
+            {
+                out_file << game_table_alpha[j + (i*width)];
+            }
+            out_file << "\n";
+        }
+    out_file.close();
 }
