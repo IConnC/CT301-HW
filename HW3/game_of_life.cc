@@ -3,6 +3,7 @@
 #include <string>
 #include <sstream>
 #include "game_of_life.h"
+#include <stdexcept>
 
 using namespace std;
 
@@ -35,31 +36,35 @@ Function:
 
 
 game_of_life::game_of_life(std::string filename) {
-    game_of_life::live_cell = '*';
-    game_of_life::dead_cell = '-';
+    SetLiveCell('*');
+    SetDeadCell('-');
+    generation_number = 0;
     
     InitializeFromFile(filename);
 }
 
 game_of_life::game_of_life(std::string filename, int pregens) {
-    game_of_life::live_cell = '*';
-    game_of_life::dead_cell = '-';
+    SetLiveCell('*');
+    SetDeadCell('-');
+    generation_number = 0;
 
     InitializeFromFile(filename);
     NextNGen(pregens);
 }
     
 game_of_life::game_of_life(std::string filename, char _live_cell, char _dead_cell) {
-    live_cell = _live_cell;
-    dead_cell = _dead_cell;
+    SetLiveCell(_live_cell);
+    SetDeadCell(_dead_cell);
+    generation_number = 0;
     
     InitializeFromFile(filename);
 }
         
 game_of_life::game_of_life(std::string filename, char _live_cell, char _dead_cell, int pregens) {
-    live_cell = _live_cell;
-    dead_cell = _dead_cell;
-    
+    SetLiveCell(_live_cell);
+    SetDeadCell(_dead_cell);
+    generation_number = 0;
+
     InitializeFromFile(filename);
 
     NextNGen(pregens);
@@ -67,8 +72,19 @@ game_of_life::game_of_life(std::string filename, char _live_cell, char _dead_cel
 
 void game_of_life::InitializeFromFile(string filename) {
     ifstream file_in(filename);
+
+    if (file_in.fail()) {
+        throw(runtime_error(file_not_found_error + filename + error_end));
+    }
+
     string line;
+    width = 0;
+    height = 0;
     file_in >> width >> height;
+
+    if (width <= 0 || height <= 0) {
+        throw(runtime_error(invalid_read_error + filename + error_end));
+    }
 
     generation = string(width * height, dead_cell);
     getline(file_in, line);
@@ -82,7 +98,7 @@ void game_of_life::InitializeFromFile(string filename) {
 }
 
 int game_of_life::GetGenerations() {
-    return generation_number;
+    return this -> generation_number;
 }
 
 void game_of_life::NextGen() {
@@ -99,10 +115,16 @@ void game_of_life::NextNGen(int gens) {
 }
 
 void game_of_life::SetLiveCell(char _live_cell) {
+    if (dead_cell == _live_cell) {
+        throw(runtime_error(cell_dupe_error));
+    }
     live_cell = _live_cell;
 }
 
 void game_of_life::SetDeadCell(char _dead_cell) {
+    if (live_cell == _dead_cell) {
+        throw(runtime_error(cell_dupe_error));
+    }
     dead_cell = _dead_cell;
 }
 
@@ -124,7 +146,7 @@ game_of_life game_of_life::operator++(const int fake) { // Post Increment
 
 std::string game_of_life::ToString() const {
     stringstream out("");
-    out << "Generation: " << generation << "\n";
+    out << "Generation: " << generation_number << "\n";
     for (int row=0; row < height; row++) {
         for (int col=0; col < width; col++) {
             out << generation[col+(row*width)];
@@ -136,6 +158,7 @@ std::string game_of_life::ToString() const {
 
 std::ostream& operator<<(std::ostream &os, const game_of_life &game) {
     string out = game.ToString();
+    //printf(out);
     for (size_t i=0; i < out.length(); i++) {
         os.put(out[i]);
     }
@@ -144,8 +167,11 @@ std::ostream& operator<<(std::ostream &os, const game_of_life &game) {
 
 
 
-
-// Returns an integer array of all cells that are currently alive
+/*CountAliveAdjacentCells*/
+//Input: Index of current cell to check for adjacents
+//Output: Count of adjacent cells
+// For this method, I have 2 for loops that go from the row - 1 to row + 1 and col - 1 to col + 1
+// I then use an algorithm to turn out of bound indexes into proper indexes for the wrap around code.
 int game_of_life::CountAliveAdjacentCells(int index) {
     int adjacent = 0;
 
@@ -181,17 +207,6 @@ bool game_of_life::IsCellAlive(int alive_neighbors, bool currently_alive) {
     if (!currently_alive && alive_neighbors == 3) return true;
 
     return false;
-}
-
-// Outputs the cells
-void OutputGeneration(const string &gen, int generation_number, int width) {
-    cout << "Generation: " << generation_number << "\n";
-    for (int row=0; row < width; row++) {
-        for (int col=0; col < width; col++) {
-            cout << gen[col+(row*width)];
-        }
-        cout << "\n";
-    }
 }
 
 // Calculates the next cell generation

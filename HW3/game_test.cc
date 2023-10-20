@@ -5,7 +5,7 @@ using namespace std;
 
 int main(int argc, char const *argv[])
 {
-    game_of_life game("fail");
+    game_of_life game("test1");
     cout << game;
     game.NextGen();
     cout << game;

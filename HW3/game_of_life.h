@@ -12,6 +12,7 @@ class game_of_life {
 	// Invalid read and FNF error need to include the offending file name and be closed off by the error end string
 public:
     //All Constructors throw runtime errors , File not Found, Invalid Width and Height, Live and Dead Cell duplication
+    game_of_life() = delete; // Remove default constructor
     game_of_life(std::string filename);
     game_of_life(std::string filename, int pregens);
     game_of_life(std::string filename, char live_cell, char dead_cell);
