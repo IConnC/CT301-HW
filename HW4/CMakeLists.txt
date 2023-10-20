@@ -18,11 +18,13 @@ add_compile_options(-Wunused-const-variable=1 -Wzero-as-null-pointer-constant)
 
 # add_compile_options must be BEFORE add_executable or add_library.
 
-add_library(${PROJECT_NAME} Event.cc Holiday.cc Workday.cc Priority_Event.cc) 
+add_library(${PROJECT_NAME} Event.cc Priority_Event.cc Workday.cc Holiday.cc)
 
 #These next 2 lines allow you to define
 add_executable(test test.cc)
 target_link_libraries(test ${PROJECT_NAME})
 
 # Create a tar file every time:
-add_custom_target(submission COMMAND tar -cf ${PROJECT_NAME}.tar game_of_life.cc *.h CMakeLists.txt)
+add_custom_target(submission COMMAND tar -cf ${PROJECT_NAME}.tar *.cc *.h CMakeLists.txt)
+
+message(STATUS "Adding Workday.cc from: ${CMAKE_CURRENT_SOURCE_DIR}/Workday.cc")
