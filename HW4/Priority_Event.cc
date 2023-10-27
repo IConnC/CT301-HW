@@ -65,14 +65,14 @@ ushort Priority_Event::GetPriority() const {
     return priority;
 }
 
-
-    // P1 = New Event, Priority: 10, Date: 2023-10-20
-    // P2 = Simple, Priority: 10, Date: 2023-10-20
-    // P3 = Low Prio, Priority: 200, Date: 2023-10-20
-    // P4 = Simple, Priority: 7, Date: 2025-12-25
-    // (p1 < p2) = false
-    // (p2 < p3) = false
-    // (p3 < p1) = true
+/*operator<*/
+// P1 = New Event, Priority: 10, Date: 2023-10-20
+// P2 = Simple, Priority: 10, Date: 2023-10-20
+// P3 = Low Prio, Priority: 200, Date: 2023-10-20
+// P4 = Simple, Priority: 7, Date: 2025-12-25
+// (p1 < p2) = false
+// (p2 < p3) = false
+// (p3 < p1) = true
 bool Priority_Event::operator<(const Event &rhs) const {
     // rhs priority = 10
 
@@ -86,6 +86,8 @@ bool Priority_Event::operator<(const Event &rhs) const {
     }
 }
 
+/*operator<*/
+// 
 bool Priority_Event::operator<(const std::string &rhs) const {
     // rhs priority = 10
     Event temp(rhs);
@@ -99,6 +101,8 @@ bool Priority_Event::operator<(const std::string &rhs) const {
     }
 }
 
+/*operator<*/
+// 
 bool Priority_Event::operator<(const Priority_Event &rhs) const {
     // If date is earlier return true
     // Else return true if events are both the same date and priority of current event is less than priority of rhs event
@@ -110,7 +114,8 @@ bool Priority_Event::operator<(const Priority_Event &rhs) const {
     }
 }
 
-
+/*operator<<*/
+// Concatenates the data required to be the string output desired, outputs to ostream operator with the concatenated string
 std::ostream& operator<<(std::ostream &out, const Priority_Event &rhs) {
     const auto save_fill = out.fill('0');
 	return out << rhs.GetName() << ", Priority: "

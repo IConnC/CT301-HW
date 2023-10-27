@@ -22,7 +22,7 @@ int main() {
     cout << boolalpha << (w2 < w3) << "\n\n" << endl;
     // Basic Comparison tests
     // True/False/False
-    cout << boolalpha << (w1 < w2) << "/" << (w2 < w1) << "/" << (w3 < w2)  << "\n\n\n\nNEXT\n\n\n\n"<< endl;
+    cout << boolalpha << (w1 < w2) << "/" << (w2 < w1) << "/" << (w3 < w2)  << "\n\n\n" << endl;
     //Uncomment these lines to add tests with Priority Events, No tests will be provided for Holiday
     Priority_Event p1;
     Priority_Event p2("Simple");
@@ -32,7 +32,16 @@ int main() {
     cout << p1 << "\n\n" << p2 << "\n\n" << p3 << "\n\n" << p4 << endl;
     // Basic comparisons
     // false/false/true
-    cout << (p1 < p2) << "/" << (p2 < p3) << "/" << (p3 < p1) << endl;
+    cout << (p1 < p2) << "/" << (p2 < p3) << "/" << (p3 < p1) << "\n\n\n" << endl;
+
+
+    // Holiday tests
+    Holiday h1("MLK");
+    Holiday h2("New Years Day", true);
+    Holiday h3("");
+    Holiday h4("");
+    Holiday h5("");
+    Holiday h6("");
 
 
     return 0;

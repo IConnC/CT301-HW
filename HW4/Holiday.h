@@ -24,11 +24,29 @@ class Holiday : public Priority_Event {
     Holiday(Holiday &&rhs) = default;
     virtual ~Holiday() = default;
 
+    /*IsGov*/
+    //Input: None
+    //Output: Boolean on whether it is a government holiday or not
     bool IsGov() const;
-    
+
+    /*operator<*/
+    //Input: Event object
+    //Output: boolean if the current Holiday object is higher priority than the event passed
     bool operator<(const Event &rhs) const;
+
+    /*operator<*/
+    //Input: string containing the date
+    //Output: Boolean on whether it is a government holiday or not
     bool operator<(const std::string &rhs) const;
+    
+    /*operator<*/
+    //Input: Priority_Event object on how
+    //Output: Boolean on whether it is a government holiday or not
     bool operator<(const Priority_Event &rhs) const;
+    
+    /*operator<*/
+    //Input: None
+    //Output: Boolean on whether it is a government holiday or not
     bool operator<(const Holiday &rhs) const;
 };
 
