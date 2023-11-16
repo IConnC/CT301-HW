@@ -3,10 +3,6 @@
 #include <string>
 #include <iostream>
 
-
-
-// TODO: Constructor comments the output should be an explanation of what the object looks like after completing the constructor call
-
 struct game_save_state {
     std::string game_board;
     int width;
@@ -47,14 +43,15 @@ public:
     
     /** game_of_life
     * @Param filename - The input filename to read for the starting conditions of The Game of Life
-    * @Return None
+    * @Return The current game string should be initialized according to the contents of filename with default live a dead cell characters and initialized generation to 0
     */
     game_of_life(std::string filename);
     
     /** game_of_life
     * @Param filename - The input filename to read for the starting conditions of The Game of Life
     * @Param pregens - Generations to pre-simulate during initialization
-    * @Return None
+    * @Return The current game string should be initialized according to the contents of filename with default live a dead cell characters and initialized generation to 0
+    *         The game should also pre-generate/simulate for pregens number of cycles
     */
     game_of_life(std::string filename, int pregens);
     
@@ -62,7 +59,8 @@ public:
     * @Param filename - The input filename to read for the starting conditions of The Game of Life
     * @Param live_cell - The character that should be used to represent a live cell
     * @Param live_cell - The character that should be used to represent a dead cell
-    * @Return None
+    * @Return The current game string should be initialized according to the contents of filename with live cells set to live_cell and dead cells set to dead_cell
+    *         characters and initialized generation to 0
     */
     game_of_life(std::string filename, char live_cell, char dead_cell);
     
@@ -71,7 +69,8 @@ public:
     * @Param live_cell - The character that should be used to represent a live cell
     * @Param live_cell - The character that should be used to represent a dead cell
     * @Param pregens - Generations to pre-simulate during initialization
-    * @Return None
+    * @Return The current game string should be initialized according to the contents of filename with live cells set to live_cell and dead cells set to dead_cell
+    *         The game should also pre-generate/simulate for pregens number of cycles
     */
     game_of_life(std::string filename, char live_cell, char dead_cell, int pregens);
     
@@ -93,9 +92,6 @@ public:
     */
     void NextNGen(int n);
     
-
-	//⁣⁢⁢⁣Setting the Live and Dead cells both throw runtime errors if the one is trying to be set to the other
-
     /** SetLiveCell
     * @Param live_cell - The character that should be used to represent a live cell
     * @Return None
@@ -108,16 +104,44 @@ public:
     */
     void SetDeadCell(char dead_cell);
 
+    /** GenWindow
+    * @Param row - Row number of index to set as top left of the window
+    * @Param col - Column number of index to set as top left of the window
+    * @Param height - Height to set the window
+    * @Param width - Width the set the window
+    * @Return string of the game table that is a subset of the original game table but offset by the row and column and set with height rows and width columns
+    */
     std::string GenWindow(int row, int col, int height, int width);
     
-    game_of_life GenSubGame(int row, int col, int ght, int width);
+    /** GenSubGame
+    * @Param dead_cell - The character that should be used to represent a dead cell
+    * @Return None
+    */
+    game_of_life GenSubGame(int row, int col, int height, int width);
 
+    /** ToggleCell
+    * @Param index - The index of the cell to toggle
+    * @Return None
+    */
     void ToggleCell(int index);
 
+    /** ToggleCell
+    * @Param row - The row of the cell to toggle
+    * @Param col - The column of the cell to toggle
+    * @Return None
+    */
     void ToggleCell(int row, int col);
     
+    /** IsStillLife
+    * @Param None
+    * @Return None
+    */
     bool IsStillLife();
 
+    /** GetAvailableGens
+    * @Param None
+    * @Return The number of generations that we are able to rollback to
+    */
     int GetAvailableGens();
 
     /** operator++
@@ -131,43 +155,108 @@ public:
     * @Return Old Instance of game_of_life before completing one generation simulation
     */
     game_of_life operator++(int fake); //⁣⁢⁢⁣Post-increment
-    
+
+    /** operator+=
+    * @Param gens - number of generations to generator or rollback
+    * @Return Returns instance of current game after incrementing by gens generations
+    */
     game_of_life& operator+=(int gens);
 
+    /** operator-=
+    * @Param gens - number of gens to rollback
+    * @Return Returns instance of current game after rolling back by gens generations
+    */
     game_of_life& operator-=(int gens);
 
     /** operator+
-    * @Param gens - Number of generations to increment/simulate
-    * @Return Copy of game_of_life then incremented by number of gens
+    * @Param gens - Number of generations to rollback
+    * @Return Copy of game_of_life incremented by number of gens
     */
     game_of_life operator+(int gens);
 
+    /** operator-
+    * @Param gens - Number of generations to increment/simulate
+    * @Return Copy of game_of_life rolled back by number of gens
+    */
     game_of_life operator-(int gens);
 
+    /** operator--
+    * @Param None
+    * @Return Rolls back current game by 1 then returns current instance
+    */
     game_of_life& operator--();
 
+    /** operator--
+    * @Param None
+    * @Return Copy of game state before rolling back by 1
+    */
     game_of_life operator--(int fake);
 
+    /** operator<
+    * @Param game of life instance to compare to
+    * @Return true if number of live cells in current instance less than provided instance else false
+    */
+    bool operator<(game_of_life& gol);
+    
+    /** operator<=
+    * @Param game of life instance to compare to
+    * @Return true if number of live cells in current instance less than or equal to provided instance else false
+    */
+    bool operator<=(game_of_life& gol);
+    
+    /** operator>
+    * @Param game of life instance to compare to
+    * @Return true if number of live cells in current instance greater than provided instance else false
+    */
+    bool operator>(game_of_life& gol);
 
-    bool operator<(game_of_life &);
-    
-    bool operator<=(game_of_life &);
-    
-    bool operator>(game_of_life &);
-    
-    bool operator>=(game_of_life &);
+    /** operator>=
+    * @Param game of life instance to compare to
+    * @Return true if number of live cells in current instance greater than or equal to provided instance else false
+    */
+    bool operator>=(game_of_life& gol);
 
-    bool operator==(game_of_life &);
+    /** operator>
+    * @Param game of life instance to compare to
+    * @Return true if number of live cells in current instance and live cells in provided instance within 0.5% of each other else false
+    */
+    bool operator==(game_of_life& gol);
 
     /** operator<<
     * @Param os - ostream from the right side of the operator
     * @Param game - the game of life object to output
-    * @Return ostream with the game_of_life ToString method's returned string appended to it
+    * @Return ostream with the game_of_life string formatting requirements appended to it
     */
     friend std::ostream& operator<<(std::ostream& os, const game_of_life& game);
 
 private:
+    /** game_of_life
+    * @Param None
+    * @Return Should initialize a new game of life instance with the inputs of a window
+    */
+    game_of_life(std::string window, int row, int col, int height, int width, char live_cell, char dead_cell);
+
+    /** CalculateLiveCellRatio
+    * @Param game_board - Game board to calculate percentage with
+    * @Return Float that is the calculation of the percentage of cells that are currently alive compared to the total cells
+    */
+    float CalculateLiveCellRatio(std::string game_board);
+    
+    /** CreateSaveState
+    * @Param instance - game_of_life instance to create a save state for
+    * @Return a game_save_state that is created based on instance
+    */
     game_save_state CreateSaveState(game_of_life& instance);
+    
+    /** CreateSaveState
+    * @Param game_board - Game board to create the save state off of
+    * @Param width - Width of the game board
+    * @Param height - Height of the game board
+    * @Param generation - Current generation to save into the save state
+    * @Param live - Live cell character to save into the save state
+    * @Param dead - Dead cell character to save into the save state
+    * @Return a game_save_state that is created based on the attributes of game_board and other parameters
+    */
     game_save_state CreateSaveState(std::string game_board, int width, int height, int generation, char live, char dead);
 };
 

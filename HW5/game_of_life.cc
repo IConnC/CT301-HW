@@ -9,18 +9,39 @@
 
 using namespace std;
 
-//⁣⁢⁢⁣Constructors
+/** game_of_life
+ *
+ * Instantiates the game of life based on the filename of the starting cells
+ *
+ */
 game_of_life::game_of_life(string filename) : game_of_life(filename, 0) {}
 
+/** game_of_life
+ *
+ * Instantiates the game of life based on the filename of the file that contains the starting cells and the amount of times to pregenerate the game.
+ * Along with this the live cell and dead cells are set to a default * and - respectively
+ *
+ */
 game_of_life::game_of_life(std::string filename, int pregens) : game_of_life(filename, '*', '-', pregens) {}
 
+/** game_of_life
+ *
+ * Instantiates the game of life based on the filename of the file that contains the starting cells and the live and dead cell characters that we want to use.
+ * Does not pregenerate the game of life
+ *
+ */
 game_of_life::game_of_life(std::string filename, char live_cell, char dead_cell) : game_of_life(filename, live_cell, dead_cell, 0) {}
 
+/** game_of_life
+ *
+ * Instantiates the game of life based on the filename of the file that contains the starting cells and the amount of times to pregenerate the game.
+ * Sets the live and dead cell characters according to parameters and pregenerates based on pregens 
+ * 
+ */
 game_of_life::game_of_life(std::string filename, char live_cell, char dead_cell, int pregens) {
     if (live_cell == dead_cell) {
         throw std::runtime_error("game_of_life - game_of_life(std::string, char, char, int) - " + std::string(game_of_life::cell_dupe_error));
-    }
-    else {
+    } else {
         this->SetLiveCell(live_cell);
         this->SetDeadCell(dead_cell);
     }
@@ -45,7 +66,27 @@ game_of_life::game_of_life(std::string filename, char live_cell, char dead_cell,
     this->NextNGen(pregens);
 }
 
-//⁣⁢⁢⁣Mutators and Accessors
+/** game_of_life
+ *
+ * Instantiates the game of life based on the window given as a string and sets the row, columns, height, width, live_cell, and dead_cell to the respective parameter.
+ * Does not pregenerate
+ *
+ */
+game_of_life::game_of_life(std::string window, int row, int col, int height, int width, char live_cell, char dead_cell) {
+    if (live_cell == dead_cell) {
+        throw std::runtime_error("game_of_life - game_of_life(std::string, int, int, int, int, char, char) - " + std::string(game_of_life::cell_dupe_error));
+    } else {
+        this->SetLiveCell(live_cell);
+        this->SetDeadCell(dead_cell);
+    }
+    this->current_ = window;
+}
+
+/** SetLiveCell
+ *
+ * Sets the live_cell character to a new character
+ *
+ */
 void game_of_life::SetLiveCell(char new_live_cell) {
     if (new_live_cell == this->dead_cell_) {
         throw(runtime_error("game_of_life - SetLiveCell(char) - " + std::string(game_of_life::cell_dupe_error)));
@@ -54,6 +95,11 @@ void game_of_life::SetLiveCell(char new_live_cell) {
     this->live_cell_ = new_live_cell;
 }
 
+/** SetDeadCell
+ *
+ * Sets the dead_cell character to a new character
+ *
+ */
 void game_of_life::SetDeadCell(char new_dead_cell) {
     if (new_dead_cell == this->live_cell_) {
         throw(runtime_error("game_of_life - SetDeadCell(char) - " + std::string(game_of_life::cell_dupe_error)));
@@ -62,11 +108,20 @@ void game_of_life::SetDeadCell(char new_dead_cell) {
     this->dead_cell_ = new_dead_cell;
 }
 
+/** GetGenerations
+ *
+ * Returns the current generation that we have generated to
+ *
+ */
 int game_of_life::GetGenerations() {
     return this->generations_;
 }
 
-//⁣⁢⁢⁣​Next Generations
+/** NextGen
+ *
+ * Generates the next generation and updates the current game board
+ *
+ */
 void game_of_life::NextGen() {
     ++this->generations_;
     string next = this->current_;
@@ -116,47 +171,126 @@ void game_of_life::NextGen() {
     save_states[save_state_index++] = CreateSaveState(*this);
 }
 
+/** NextNGen
+ *
+ * Generates the next n generations and updates the current game board
+ * Utilizes call to NextGen to prevent repeat code
+ *
+ */
 void game_of_life::NextNGen(int n) {
     while (n-- > 0) {
         this->NextGen();
     }
 }
 
+/** GenWindow
+ *
+ * Generates a window where the row and column provided are the top left most part of the window. The window is then sized with a height and width.
+ * The height and width may cause the method to loop around to the otherside of the game board.
+ *
+ */
 std::string game_of_life::GenWindow(int row, int col, int height, int width) {
     if (height > height_ || width > width_)
         throw domain_error(game_oob);
 
     if (row > height_ || col > width_)
-        throw range_error(std::string(row_col_oob_1) + std::to_string(row)
-         + std::string(row_col_oob_2) + std::to_string(col) + std::string(row_col_oob_3) + std::to_string(width)
-         + std::string(row_col_oob_4) + std::to_string(height) + std::string(row_col_oob_5));
+        throw range_error("game_of_life - GenWindow(int, int, int, int) - " + std::string(row_col_oob_1) + std::to_string(row)
+         + std::string(row_col_oob_2) + std::to_string(col) + std::string(row_col_oob_3) + std::to_string(width_)
+         + std::string(row_col_oob_4) + std::to_string(height_) + std::string(row_col_oob_5));
     
     std::string window = "";
-
     int real_index;
 
-    //cout << "\nGame Table Height: " << height_ << "\nGame Table Width: " << width_ << "\nStarting Row: " 
-     //    << row << "\nStarting Col: " << col << "\nWindow Height: " << height << "\nWindow Width: " << width << "\n\n";  
-
     for (int window_row=0; window_row < height; window_row++) {
-        for (int window_col=0; window_col < width; window_col++) {
-
-            //cout << "Window Row: " << window_row << "\nWindow Col: " << window_col << "\n";
-            
-            real_index = ((col + window_col) % width_ + (((row + window_row) % height_) * width_));
-            //cout << "Real Index: " << real_index << "\n\n";
+        for (int window_col=0; window_col < width; window_col++) {        
+            real_index = ((col + window_col) % width_ + (((row + window_row) % height_) * width_)); // Wrap around logic
             window += current_[real_index];
         }
     }
     return window;
 }
 
+/** GenSubGame
+ *
+ * Generates a "sub game" or new instance of game_of_life that uses a window that is generated using the parameters 
+ * and a call to GenWindow instead of grabbing the starting cells from a file.
+ *
+ */
+game_of_life game_of_life::GenSubGame(int row, int col, int height, int width) {
+    if (height > height_ || width > width_)
+        throw domain_error(game_oob);
 
+    if (row > height_ || col > width_)
+        throw range_error("game_of_life - GenSubGame(int, int, int, int) - " + std::string(row_col_oob_1) + std::to_string(row)
+         + std::string(row_col_oob_2) + std::to_string(col) + std::string(row_col_oob_3) + std::to_string(width_)
+         + std::string(row_col_oob_4) + std::to_string(height_) + std::string(row_col_oob_5));
 
+    std::string window = GenWindow(row, col, height, width);
+    game_of_life gol(window, row, col, height, width, live_cell_, dead_cell_);
+    return gol;
+}
+
+/** ToggleCell
+ *
+ * Sets a live cell to dead or a dead cell to a live cell based on an index
+ *
+ */
+void game_of_life::ToggleCell(int index) {
+    if (index > width_ * height_)
+        throw range_error("Index out of bounds, index passed: " + std::to_string(index) + ", maximum index: " + std::to_string(width_ * height_ - 1) + "\n");
+    if (current_[index] == dead_cell_) {
+        current_[index] = dead_cell_;
+    } else {
+        current_[index] = live_cell_;
+    }
+}
+
+/** ToggleCell
+ *
+ * Sets a live cell to dead or a dead cell to a live cell based on the row and column a cell exists at
+ *
+ */
+void game_of_life::ToggleCell(int row, int col) {
+    if (row > height_ || col > width_)
+        throw range_error("game_of_life - ToggleCell(int, int) - " + std::string(row_col_oob_1) + std::to_string(row)
+         + std::string(row_col_oob_2) + std::to_string(col) + std::string(row_col_oob_3) + std::to_string(width_)
+         + std::string(row_col_oob_4) + std::to_string(height_) + std::string(row_col_oob_5));
+    
+    ToggleCell(col % width_ + ((row % height_) * width_));
+}
+
+/** IsStillLife
+ *
+ * If the game board does not change from one generation to another we return true meaning the game is "still"
+ *
+ */
+bool game_of_life::IsStillLife() {
+    return current_ == (this->operator+(1)).current_; // If current generation is equal to next generation return true
+}
+
+/** GetAvailableGens
+ *
+ * Returns the number of generations that can be rolled back
+ *
+ */
+int game_of_life::GetAvailableGens() {
+    return save_state_index;
+}
+
+/** CreateSaveState
+ *
+ * Creates a save state based on the provided instance of game_of_life (game_save_state)
+ *
+ */
 game_save_state game_of_life::CreateSaveState(game_of_life& instance) {
     return CreateSaveState(instance.current_, instance.width_, instance.height_, instance.generations_, instance.live_cell_, instance.dead_cell_);
 }
 
+/** CreateSaveState
+ *
+ * Creates a save state based on the provided game_board and game_board details of game_of_life (game_save_state)
+ *
+ */
 game_save_state game_of_life::CreateSaveState(std::string game_board, int width, int height, int generation, char live, char dead) {
     struct game_save_state temp;
     temp.game_board = game_board;
@@ -168,28 +302,46 @@ game_save_state game_of_life::CreateSaveState(std::string game_board, int width,
     return temp;
 }
 
-//⁣⁢⁢⁣Operators
-game_of_life& game_of_life::operator++() {
+/** operator++
+ *
+ * Incremenets the current game by 1 generation
+ *
+ */
+game_of_life& game_of_life::operator++() { // Pre increment
     this->NextGen();
     return *this;
 }
 
-game_of_life game_of_life::operator++(int fake) {
+/** operator++
+ *
+ * Returns a copy of the game before incrementing the game by 1 generation
+ *
+ */
+game_of_life game_of_life::operator++(int fake) { // Post increment
     const auto old = *this;
     ++*this;
     return old;
 }
 
+/** operator+=
+ *
+ * Increments or rolls back the game by gens generations then returns a reference to the current game
+ *
+ */
 game_of_life& game_of_life::operator+=(int gens) {
     if (gens >= 0) {
         NextNGen(gens);
-    }
-    else {
+    } else {
         operator-=(abs(gens));
     }
     return *this;
 }
 
+/** operator-=
+ *
+ * Rolls back the game by gens generations and returns the reference to the current game
+ *
+ */
 game_of_life& game_of_life::operator-=(int gens) {
     if (save_state_index == 0) throw domain_error("game_of_life - operator-=(int) - " + std::string(domain_error_no_rollback));
     if (gens > save_state_index) throw range_error("game_of_life - operator-=(int) - " + std::string(range_error_lack_generations));
@@ -207,17 +359,28 @@ game_of_life& game_of_life::operator-=(int gens) {
     return *this;
 }
 
+/** operator+
+ *
+ * Increments or rolls back a copy of the game by gens generations then returns the copy.
+ * This does not affect the current instance
+ *
+ */
 game_of_life game_of_life::operator+(int gens) {
     game_of_life res = *this;
     if (gens >= 0) {
         res.NextNGen(gens);
     } else {
-        return operator-(abs(gens));
+        return res.operator-(abs(gens));
     }
-    this->NextNGen(gens);
     return res;
 }
 
+/** operator-
+ *
+ * Rolls back a copy of the game by gens generations
+ * This does not affect the current instance
+ *
+ */
 game_of_life game_of_life::operator-(int gens) {
     if (save_state_index == 0) throw domain_error("game_of_life - operator-(int) - " + std::string(domain_error_no_rollback));
     if (gens > save_state_index) throw range_error("game_of_life - operator-(int) - " + std::string(range_error_lack_generations));
@@ -228,15 +391,22 @@ game_of_life game_of_life::operator-(int gens) {
     return res;
 }
 
-/*
-Decrement the current game state by 1 then returns a reference to the current decremented game state
-*/
+/** operator--
+ *
+ * Decrement the current game state by 1 then returns a reference to the current decremented game state
+ *
+ */
 game_of_life& game_of_life::operator--() {
     if (save_state_index == 0) throw domain_error("game_of_life - operator--() - " + std::string(domain_error_no_rollback));
     operator-=(1);
     return *this;
 }
 
+/** operator--
+ *
+ * Returns a copy of the current game before decrementing the current instance of the game by 1
+ *
+ */
 game_of_life game_of_life::operator--(int fake) {
     if (save_state_index == 0) throw domain_error("game_of_life - operator--(int) - " + std::string(domain_error_no_rollback));
 
@@ -245,7 +415,79 @@ game_of_life game_of_life::operator--(int fake) {
     return old;
 }
 
+/** CalculateLiveCellRatio
+ *
+ * Calculates the percentage of alive cells that are in the game board.
+ * If 25 cells are alive out of 100 cells, the percentage of alive cells would be 25% (in float format)
+ *
+ */
+float game_of_life::CalculateLiveCellRatio(std::string game_board) {
+    if (game_board.size() == 0) return 0;
 
+    int num_alive = 0;
+    for (int i=0; i < static_cast<int>(game_board.size()); i++) {
+        if (game_board[i] == live_cell_)
+            num_alive++;
+    }
+    return (static_cast<float>(num_alive) / game_board.size()) * 100.0f;
+}
+
+/** operator<
+ *
+ * If the current game of life instance has less live cells than the game of life instance that is provided, return true, else false
+ *
+ */
+bool game_of_life::operator<(game_of_life &gol) {
+    return CalculateLiveCellRatio(current_) < CalculateLiveCellRatio(gol.current_);
+}
+
+/** operator<=
+ *
+ * If the current game of life instance has less or equal live cells than the game of life instance that is provided, return true, else false
+ *
+ */
+bool game_of_life::operator<=(game_of_life &gol) {
+    return CalculateLiveCellRatio(current_) < CalculateLiveCellRatio(gol.current_);
+}
+
+/** operator
+ *
+ * If the current game of life instance has more live cells than the game of life instance that is provided, return true, else false
+ *
+ */
+bool game_of_life::operator>(game_of_life &gol) {
+    return CalculateLiveCellRatio(current_) > CalculateLiveCellRatio(gol.current_);
+}
+
+/** operator>=
+ *
+ * If the current game of life instance has more or equal live cells than the game of life instance that is provided, return true, else false
+ *
+ */
+bool game_of_life::operator>=(game_of_life &gol) {
+    return CalculateLiveCellRatio(current_) >= CalculateLiveCellRatio(gol.current_);
+}
+
+/** operator==
+ *
+ * If the current game of life instance and the provided instance have a Alive Cell Ratio of less than or equal to 0.5, return true, else false
+ *
+ */
+bool game_of_life::operator==(game_of_life &gol) {
+    return abs(CalculateLiveCellRatio(current_) - CalculateLiveCellRatio(gol.current_)) <= 0.5f;
+}
+
+/** operator<<
+ *
+ * Outputs the game of life game board as a string formatted as such:
+ * Generation: X
+ * -----*-*--
+ * ------**--
+ * ------***-
+ * --------*-
+ * ---*--*---
+ * Where X is replaced by the current generation and the game board is made of live_cell and dead_cell and simulated to the desired generation.
+ */
 std::ostream& operator<<(std::ostream& os, const game_of_life& game) {
     string out = "Generation: ";
     out += to_string(game.generations_);
