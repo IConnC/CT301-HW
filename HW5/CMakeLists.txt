@@ -20,7 +20,7 @@ add_compile_options(-Wunused-const-variable=1 -Wzero-as-null-pointer-constant)
 
 add_library(${PROJECT_NAME} game_of_life.cc) 
 
-#These next 2 lines allow you to define
+#These next 2 lines allow you to define - COMMENT BEFORE SUBMITTING
 add_executable(game_test game_test.cc)
 target_link_libraries(game_test ${PROJECT_NAME})
 

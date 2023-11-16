@@ -231,10 +231,14 @@ public:
 
 private:
     /** game_of_life
-    * @Param None
+    * @Param window - string containing everything on the gameboard with no whitespace or new line
+    * @Param height - Height of the game board
+    * @Param width - Width of the game board
+    * @Param live_cell - What to set the live cell character to
+    * @Param dead_cell - What to set the dead cell character to
     * @Return Should initialize a new game of life instance with the inputs of a window
     */
-    game_of_life(std::string window, int row, int col, int height, int width, char live_cell, char dead_cell);
+    game_of_life(std::string window, int height, int width, char live_cell, char dead_cell);
 
     /** CalculateLiveCellRatio
     * @Param game_board - Game board to calculate percentage with

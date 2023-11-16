@@ -3,6 +3,7 @@
 #include <string>
 #include <stdexcept>
 #include <algorithm>
+#include <cmath>
 #include "game_of_life.h"
 
 // George Krier - 835973055
@@ -72,13 +73,15 @@ game_of_life::game_of_life(std::string filename, char live_cell, char dead_cell,
  * Does not pregenerate
  *
  */
-game_of_life::game_of_life(std::string window, int row, int col, int height, int width, char live_cell, char dead_cell) {
+game_of_life::game_of_life(std::string window, int height, int width, char live_cell, char dead_cell) {
     if (live_cell == dead_cell) {
         throw std::runtime_error("game_of_life - game_of_life(std::string, int, int, int, int, char, char) - " + std::string(game_of_life::cell_dupe_error));
     } else {
         this->SetLiveCell(live_cell);
         this->SetDeadCell(dead_cell);
     }
+    height_ = height;
+    width_ = width;
     this->current_ = window;
 }
 
@@ -120,9 +123,18 @@ int game_of_life::GetGenerations() {
 /** NextGen
  *
  * Generates the next generation and updates the current game board
+ * The method also adds the current save state to the that discards the oldest save and only saves 100 iterations
  *
  */
 void game_of_life::NextGen() {
+    if (save_state_index >= 99) {
+        for (int i=0; i < 99; i++) {
+            save_states[i] = save_states[i+1];
+        }
+        save_state_index--;
+    }
+    save_states[++save_state_index] = CreateSaveState(*this);
+
     ++this->generations_;
     string next = this->current_;
     for (int row = 0; row < this->height_; ++row) {
@@ -168,7 +180,6 @@ void game_of_life::NextGen() {
         }
     }
     this->current_ = next;
-    save_states[save_state_index++] = CreateSaveState(*this);
 }
 
 /** NextNGen
@@ -226,7 +237,7 @@ game_of_life game_of_life::GenSubGame(int row, int col, int height, int width) {
          + std::string(row_col_oob_4) + std::to_string(height_) + std::string(row_col_oob_5));
 
     std::string window = GenWindow(row, col, height, width);
-    game_of_life gol(window, row, col, height, width, live_cell_, dead_cell_);
+    game_of_life gol(window, height, width, live_cell_, dead_cell_);
     return gol;
 }
 
@@ -344,9 +355,10 @@ game_of_life& game_of_life::operator+=(int gens) {
  */
 game_of_life& game_of_life::operator-=(int gens) {
     if (save_state_index == 0) throw domain_error("game_of_life - operator-=(int) - " + std::string(domain_error_no_rollback));
-    if (gens > save_state_index) throw range_error("game_of_life - operator-=(int) - " + std::string(range_error_lack_generations));
-
-    save_state_index -= gens;
+    if (gens > save_state_index + 1) throw range_error("game_of_life - operator-=(int) - " + std::string(range_error_lack_generations));
+    
+    save_state_index -= (gens - 1);
+    
     struct game_save_state temp = save_states[save_state_index];
 
     this->current_ = temp.game_board;
@@ -394,6 +406,7 @@ game_of_life game_of_life::operator-(int gens) {
 /** operator--
  *
  * Decrement the current game state by 1 then returns a reference to the current decremented game state
+ * Pre-Decrement
  *
  */
 game_of_life& game_of_life::operator--() {
@@ -405,7 +418,8 @@ game_of_life& game_of_life::operator--() {
 /** operator--
  *
  * Returns a copy of the current game before decrementing the current instance of the game by 1
- *
+ * Post-Decrement
+ * 
  */
 game_of_life game_of_life::operator--(int fake) {
     if (save_state_index == 0) throw domain_error("game_of_life - operator--(int) - " + std::string(domain_error_no_rollback));
@@ -474,7 +488,7 @@ bool game_of_life::operator>=(game_of_life &gol) {
  *
  */
 bool game_of_life::operator==(game_of_life &gol) {
-    return abs(CalculateLiveCellRatio(current_) - CalculateLiveCellRatio(gol.current_)) <= 0.5f;
+    return std::fabs(CalculateLiveCellRatio(current_) - CalculateLiveCellRatio(gol.current_)) <= 0.5f;
 }
 
 /** operator<<
