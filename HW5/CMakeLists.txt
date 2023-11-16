@@ -25,4 +25,4 @@ add_executable(game_test game_test.cc)
 target_link_libraries(game_test ${PROJECT_NAME})
 
 # Create a tar file every time:
-add_custom_target(submission COMMAND tar -cf ${PROJECT_NAME}.tar game_of_life.cc *.h CMakeLists.txt)
+add_custom_target(submission COMMAND tar -cf ${PROJECT_NAME}.tar game_of_life.cc game_of_life.h CMakeLists.txt)
