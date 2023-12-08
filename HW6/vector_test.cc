@@ -6,14 +6,9 @@ using namespace std;
 int main(int argc, char *argv[]) {
     basic_vector<string> bv(10);
 
-    bv.push_back("test1");
-    bv.push_back("test2");
-    bv.push_back("test3");
-    bv.push_back("test4");
-    bv.push_back("test5");
-    bv.push_back("test6");
-    bv.push_back("test7");
-    bv.push_back("test8");
+    for (int i=0; i < 58800; i++) {
+        bv.push_back("test " + std::to_string(i));
+    }
 
     cout << "Initial basic_vector: \n" <<  bv;
 

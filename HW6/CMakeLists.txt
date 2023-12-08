@@ -18,7 +18,7 @@ add_compile_options(-Wunused-const-variable=1 -Wzero-as-null-pointer-constant)
 
 # add_compile_options must be BEFORE add_executable or add_library.
 
-#add_library(${PROJECT_NAME} vector_test.cc basic_vector.h)
+#add_library(${PROJECT_NAME} vector_test.cc basic_vector.h) # COMMENT BEFORE SUBMITTING
 
 #These next 2 lines allow you to define - COMMENT BEFORE SUBMITTING
 #add_executable(vector_test vector_test.cc)
